@@ -325,3 +325,15 @@
 
 </body>
 </html>
+
+
+
+@extends('layouts.master')
+
+@section('title', 'Judul Halaman')
+
+@section('content')
+
+    <!-- Isi halaman di sini -->
+
+@endsection
