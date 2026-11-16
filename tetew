@@ -1,0 +1,42 @@
+
+php artisan make:model LogAktivitas -m
+php artisan make:model Kategori -m
+php artisan make:model Alat -m
+php artisan make:model Peminjaman -m
+php artisan make:model Pengembalian -m
+
+php artisan make:migration create_alat_peminjaman_table
+
+-buat middleware
+php artisan make:middleware CekRole
+-setelh ubah code middleware lalu ke boostrap dan ke app.php
+
+-buat seeder
+php artisan make:seeder UserSeeder
+
+-setelah mengubah dataseeder dan user seeder jalankan
+php artisan db:seed --class=UserSeeder
+
+-controller admin
+php artisan make:controller Admin/AlatController
+php artisan make:controller Admin/KategoriController
+php artisan make:controller Admin/PeminjamanController
+php artisan make:controller Admin/PengembalianController
+php artisan make:controller Admin/UserController
+php artisan make:controller Admin/LogAktivitasController
+php artisan make:controller Admin/DashboardController
+
+
+-controller petugas
+php artisan make:controller Petugas/PeminjamanController
+php artisan make:controller Petugas/PengembalianController
+php artisan make:controller Petugas/LaporanController
+
+controller petugas 
+php artisan make:controller Peminjam/AlatController
+php artisan make:controller Peminjam/PeminjamanController
+php artisan make:controller Peminjam/PengembalianController
+
+-untuk proses login logout
+php artisan make:controller Auth/LoginController
+
