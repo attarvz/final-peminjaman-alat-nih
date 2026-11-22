@@ -1,0 +1,109 @@
+
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
+use App\Models\Peminjaman;
+use App\Models\Pengembalian;
+use App\Models\Alat;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
+
+class PengembalianController extends Controller
+{
+    public function index()
+    {
+        $peminjaman = Peminjaman::with([
+            'user',
+            'detailPeminjaman.alat',
+            'pengembalian',
+        ])
+        ->whereHas('pengembalian')
+        ->latest()
+        ->get();
+
+        if (auth()->user()->role === 'admin') {
+            return view(
+                'admin.pengembalian.index',
+                compact('peminjaman')
+            );
+        }
+
+        return view(
+            'petugas.pengembalian.index',
+            compact('peminjaman')
+        );
+    }
+
+    public function store(Request $request, $id)
+    {
+        $peminjaman = Peminjaman::with('detailPeminjaman')
+            ->findOrFail($id);
+
+        if ($peminjaman->status !== 'disetujui') {
+            return back()->with(
+                'error',
+                'Peminjaman ini tidak dapat dikembalikan.'
+            );
+        }
+
+        if (Pengembalian::where('id_peminjaman', $id)->exists()) {
+            return back()->with(
+                'error',
+                'Peminjaman ini sudah dikembalikan.'
+            );
+        }
+
+        DB::transaction(function () use ($peminjaman) {
+
+            // Tanggal pengembalian otomatis hari ini
+            $tanggalKembali = Carbon::today();
+
+            // Ambil tanggal batas pengembalian
+            $tanggalBatas = Carbon::parse(
+                $peminjaman->tanggal_batas_kembali
+            )->startOfDay();
+
+            // Hitung keterlambatan
+            $terlambat = 0;
+
+            if ($tanggalKembali->greaterThan($tanggalBatas)) {
+                $terlambat = $tanggalBatas->diffInDays(
+                    $tanggalKembali
+                );
+            }
+
+            // Denda Rp5.000 per hari
+            $denda = $terlambat * 5000;
+
+            // Kembalikan stok alat
+            foreach ($peminjaman->detailPeminjaman as $detail) {
+                $alat = Alat::where('id_alat', $detail->id_alat)
+                    ->lockForUpdate()
+                    ->firstOrFail();
+
+                $alat->increment('stok', $detail->jumlah);
+            }
+
+            // Simpan data pengembalian
+            Pengembalian::create([
+                'id_peminjaman' => $peminjaman->id_peminjaman,
+                'tanggal_pengembalian' => $tanggalKembali,
+                'denda' => $denda,
+            ]);
+
+            // Ubah status peminjaman
+            $peminjaman->update([
+                'status' => 'dikembalikan',
+            ]);
+        });
+
+        return redirect('/petugas/pengembalian')
+            ->with(
+                'success',
+                'Pengembalian berhasil dicatat. Denda dihitung otomatis.'
+            );
+    }
+}
