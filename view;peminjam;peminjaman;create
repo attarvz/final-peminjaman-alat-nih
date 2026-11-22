@@ -1,0 +1,81 @@
+
+{{-- FORM TANGGAL PEMINJAMAN --}}
+
+<div class="form-group">
+    <label>Tanggal Pinjam</label>
+    <input type="date"
+           name="tanggal_pinjam"
+           id="tanggal_pinjam"
+           class="form-control"
+           min="{{ date('Y-m-d') }}"
+           value="{{ old('tanggal_pinjam') }}"
+           required>
+</div>
+
+<div class="form-group">
+    <label>Tanggal Batas Kembali</label>
+    <input type="date"
+           name="tanggal_batas_kembali"
+           id="tanggal_batas_kembali"
+           class="form-control"
+           value="{{ old('tanggal_batas_kembali') }}"
+           required>
+
+    <small class="text-muted">
+        Maksimal peminjaman 1 bulan.
+    </small>
+</div>
+
+
+{{-- ========================================== --}}
+{{-- TAMBAHAN: SCRIPT BATAS MAKSIMAL 1 BULAN --}}
+{{-- ========================================== --}}
+
+<script>
+    const tanggalPinjam = document.getElementById('tanggal_pinjam');
+    const tanggalBatas = document.getElementById('tanggal_batas_kembali');
+
+    function aturBatasTanggal() {
+
+        if (!tanggalPinjam.value) {
+            tanggalBatas.removeAttribute('min');
+            tanggalBatas.removeAttribute('max');
+            return;
+        }
+
+        const tanggal = new Date(tanggalPinjam.value + 'T00:00:00');
+
+        // TAMBAHAN: Maksimal 1 bulan dari tanggal pinjam
+        const maksimal = new Date(tanggal);
+        maksimal.setMonth(maksimal.getMonth() + 1);
+
+        // TAMBAHAN: Format tanggal menjadi YYYY-MM-DD
+        const formatTanggal = (date) => {
+            const tahun = date.getFullYear();
+            const bulan = String(date.getMonth() + 1).padStart(2, '0');
+            const hari = String(date.getDate()).padStart(2, '0');
+
+            return `${tahun}-${bulan}-${hari}`;
+        };
+
+        // TAMBAHAN: Batas minimal dan maksimal kalender
+        tanggalBatas.min = formatTanggal(tanggal);
+        tanggalBatas.max = formatTanggal(maksimal);
+
+        // TAMBAHAN: Hapus tanggal jika melebihi batas
+        if (tanggalBatas.value) {
+            if (
+                tanggalBatas.value < tanggalBatas.min ||
+                tanggalBatas.value > tanggalBatas.max
+            ) {
+                tanggalBatas.value = '';
+            }
+        }
+    }
+
+    // TAMBAHAN: Jalankan ketika tanggal pinjam berubah
+    tanggalPinjam.addEventListener('change', aturBatasTanggal);
+
+    // TAMBAHAN: Jalankan saat halaman pertama kali dibuka
+    aturBatasTanggal();
+</script>
