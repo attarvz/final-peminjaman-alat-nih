@@ -1,0 +1,159 @@
+- LOGIN
+                  ┌───────────────┐
+                  │     MULAI     │
+                  └───────┬───────┘
+                          │
+                          ▼
+                ┌──────────────────┐
+                │ Input email dan │
+                │    password     │
+                └────────┬─────────┘
+                         │
+                         ▼
+                   ◇ Login valid? ◇
+                   /             \
+                Tidak             Ya
+                  │               │
+                  ▼               ▼
+        ┌────────────────┐   ◇ Role pengguna? ◇
+        │ Login gagal    │     /      |       \
+        └───────┬────────┘ Admin   Petugas  Peminjam
+                │           │        │         │
+                └──↗        ▼        ▼         ▼
+                       Dashboard  Dashboard  Dashboard
+                         Admin    Petugas   Peminjam
+                           \        |        /
+                            \       |       /
+                             ▼      ▼       ▼
+                          ┌──────────────┐
+                          │   SELESAI    │
+                          └──────────────┘
+
+
+
+-PEMINJAMAN
+                  ┌───────────────┐
+                  │     MULAI     │
+                  └───────┬───────┘
+                          │
+                          ▼
+                ┌──────────────────┐
+                │ Memilih alat    │
+                │ yang dipinjam   │
+                └────────┬─────────┘
+                         │
+                         ▼
+                ┌──────────────────┐
+                │ Input tanggal   │
+                │ peminjaman dan  │
+                │ batas kembali    │
+                └────────┬─────────┘
+                         │
+                         ▼
+                ◇ Maksimal 1 bulan? ◇
+                   /             \
+                Tidak            Ya
+                  │              │
+                  ▼              ▼
+        ┌────────────────┐  ┌──────────────────┐
+        │ Ubah tanggal  │  │ Kirim pengajuan  │
+        │ batas kembali  │  │ peminjaman       │
+        └───────┬────────┘  └────────┬─────────┘
+                │                    │
+                └──────↗             ▼
+                            ┌──────────────────┐
+                            │ Petugas memeriksa│
+                            │ pengajuan        │
+                            └────────┬─────────┘
+                                     │
+                                     ▼
+                            ◇ Disetujui? ◇
+                              /          \
+                           Tidak         Ya
+                             │           │
+                             ▼           ▼
+                    ┌──────────────┐  ◇ Stok tersedia? ◇
+                    │ Pengajuan    │    /           \
+                    │ ditolak     │  Tidak          Ya
+                    └──────┬──────┘    │             │
+                           │           ▼             ▼
+                           │     ┌───────────┐ ┌──────────────┐
+                           │     │ Ditolak   │ │ Ambil alat  │
+                           │     └─────┬─────┘ └──────┬───────┘
+                           │           │              │
+                           │           │              ▼
+                           │           │      ┌──────────────┐
+                           │           │      │ Gunakan alat │
+                           │           │      └──────┬───────┘
+                           │           │             │
+                           └───────┬───┴─────────────┘
+                                   ▼
+                           ┌──────────────┐
+                           │   SELESAI    │
+                           └──────────────┘
+
+
+-PENGAMBALIAN
+                  ┌───────────────┐
+                  │     MULAI     │
+                  └───────┬───────┘
+                          │
+                          ▼
+                ┌──────────────────┐
+                │ Peminjam        │
+                │ mengembalikan   │
+                │ alat            │
+                └────────┬─────────┘
+                         │
+                         ▼
+                ┌──────────────────┐
+                │ Petugas membuka  │
+                │ data peminjaman  │
+                └────────┬─────────┘
+                         │
+                         ▼
+                ┌──────────────────┐
+                │ Input tanggal    │
+                │ pengembalian     │
+                └────────┬─────────┘
+                         │
+                         ▼
+                 ◇ Terlambat? ◇
+                   /           \
+                Tidak          Ya
+                  │            │
+                  ▼            ▼
+          ┌────────────┐ ┌────────────────┐
+          │ Denda Rp0  │ │ Hitung jumlah  │
+          └──────┬─────┘ │ hari terlambat │
+                 │       └───────┬────────┘
+                 │               │
+                 │               ▼
+                 │       ┌────────────────┐
+                 │       │ Denda Rp5.000  │
+                 │       │ per hari       │
+                 │       └───────┬────────┘
+                 │               │
+                 └───────┬───────┘
+                         ▼
+                ┌──────────────────┐
+                │ Proses          │
+                │ pengembalian    │
+                └────────┬─────────┘
+                         │
+                         ▼
+                ┌──────────────────┐
+                │ Stok alat       │
+                │ diperbarui      │
+                └────────┬─────────┘
+                         │
+                         ▼
+                ┌──────────────────┐
+                │ Status menjadi   │
+                │ dikembalikan     │
+                └────────┬─────────┘
+                         │
+                         ▼
+                ┌───────────────┐
+                │    SELESAI    │
+                └───────────────┘
